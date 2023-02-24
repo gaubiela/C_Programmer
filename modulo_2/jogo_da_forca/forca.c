@@ -1,7 +1,8 @@
-#include "forca.h"
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <time.h>
+#include "forca.h"
 
 // variáveis globais
 char palavrasecreta[20];
@@ -46,6 +47,39 @@ int jachutou(char letra) {
     }
   }
   return achou;
+}
+
+void adiciona_palavra() {
+  char quer;
+
+  printf("Voce deseja adicionar uma nova palavra no jogo (S/N)?");
+  scanf(" %c", &quer);
+
+  if (quer == 'S') {
+    char novapalavra[20];
+
+    printf("Qual palavra? ");
+    scanf("%s", novapalavra);
+
+    FILE *f;
+
+    f = fopen("palavras.txt", "r+");
+    if (f == 0) {
+      printf("Banco de dados de palavras não disponível\n\n");
+      exit(1);
+    }
+
+    int qtd;
+    fscanf(f, "%d", &qtd);
+    qtd++;
+    fseek(f, 0, SEEK_SET);
+    fprintf(f, "%d", qtd);
+
+    fseek(f, 0, SEEK_END);
+    fprintf(f, "\n%s", novapalavra);
+
+    fclose(f);
+  }
 }
 
 void escolhe_palavra() {
@@ -108,4 +142,6 @@ int main() {
     chuta();
 
   } while (!ganhou() && !enforcou());
+
+  adiciona_palavra();
 }
